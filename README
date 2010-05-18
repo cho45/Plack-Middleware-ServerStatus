@@ -1,27 +1,24 @@
 This is Perl module Plack::Middleware::ServerStatus.
 
-INSTALLATION
+Starman や Starlet でバックエンドの状態を HTTP 経由で閲覧したいときに使うものです。/server-status のハンドリングを奪います
 
-Plack::Middleware::ServerStatus installation is straightforward. If your CPAN shell is set up,
-you should just be able to do
+Apache の server-status を模倣して作ってありますが、一部 mod_status にあって、こちらにないものもあります。
 
-    % cpan Plack::Middleware::ServerStatus
+Starman, Starlet 本体に対応が必要のため、以下のレポジトリの server-status ブランチを使う必要があります。
 
-Download it, unpack it, then build it as per the usual:
+- http://github.com/cho45/Starman/tree/server-status
+- http://github.com/cho45/Starlet/tree/server-status
 
-    % perl Makefile.PL
-    % make && make test
+** 実装
 
-Then install it:
+このモジュールは ps の結果をパースして統計を出しているだけです。
+インターフェイス側では $0 に情報を突っ込むようにしています。
 
-    % make install
+** なぜこれが必要か?
 
-DOCUMENTATION
+- バックエンド負荷をより正確に把握するため
+- 想定した通りのリクエスト処理がされているかを把握するため
 
-Plack::Middleware::ServerStatus documentation is available as in POD. So you can do:
-
-    % perldoc Plack::Middleware::ServerStatus
-
-to read the documentation online with your favorite pager.
+らしいです
 
 cho45
