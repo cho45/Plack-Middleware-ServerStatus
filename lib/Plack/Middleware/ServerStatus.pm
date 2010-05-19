@@ -181,6 +181,8 @@ sub _handle_server_status {
     my ($day, $hour, $min, $sec) = ($uptime =~ /(?:(\d+)-)?(?:(\d+):)?(?:(\d+):)?(\d+)/);
     my $uptime_sec = _uptime_sec($uptime);
 
+    $avg_req_per_sec = sprintf('%.2f', $avg_req_per_sec);
+
     if ($env->{QUERY_STRING} eq 'auto') {
         [ 200, ['Content-Type' => 'text/plain'], [
             "Total Accesses: $total_accesses\n",
@@ -251,27 +253,5 @@ sub _uptime_sec {
 1;
 __END__
 
-=head1 NAME
 
-Plack::Middleware::ServerStatus -
 
-=head1 SYNOPSIS
-
-  use Plack::Middleware::ServerStatus;
-
-=head1 DESCRIPTION
-
-Plack::Middleware::ServerStatus is
-
-=head1 AUTHOR
-
-cho45 E<lt>cho45@lowreal.netE<gt>
-
-=head1 SEE ALSO
-
-=head1 LICENSE
-
-This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself.
-
-=cut
