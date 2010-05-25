@@ -289,5 +289,43 @@ sub is_allowed {
 1;
 __END__
 
+=head1 NAME
 
+Plack::Middleware::ServerStatus - Show server status like Apache's mod_status
+
+=head1 SYNOPSIS
+
+  use Plack::Builder;
+
+  builder {
+      enable "Plack::Middleware::ServerStatus", path => '/server-status';
+      $app;
+  };
+
+=head1 DESCRIPTION
+
+Show server status like Apache's mod_status which helps you to find best configuration of backend servers.
+
+This middleware just parses C<ps> result as following:
+
+  $ ps | grep server-status
+  47167  7.8  0.4 S+ 0:00.15 server-status[let] (req=2) R ?       
+  47164  0.0  0.5 S+ 0:00.35 server-status[let] (req=2) _ 127.0.0.1 local.hatena.ne.jp:5000 GET /debug_toolbar/jquery.js HTTP/1.1       
+  47163  0.0  0.5 S+ 0:00.34 server-status[let] (req=2) _ 127.0.0.1 local.hatena.ne.jp:5000 GET /favicon.ico HTTP/1.1       
+  47162  0.0  0.1 S+ 0:00.01 server-status[let] (req=1) _ 127.0.0.1 local.hatena.ne.jp:5000 GET /debug_toolbar/information.gif HTTP/1.1       
+  47161  0.0  0.1 S+ 0:00.02 server-status[let] (req=1) _ 127.0.0.1 local.hatena.ne.jp:5000 GET /debug_toolbar/jquery.js HTTP/1.1       
+
+Starman and Starlet (forked) supports this C<ps> format. You have to use server-status branch of following repository because it is not include original repository master.
+
+http://github.com/cho45/Starman/tree/server-status , http://github.com/cho45/Starlet/tree/server-status
+
+=head1 AUTHOR
+
+cho45
+
+=head1 SEE ALSO
+
+L<Plack::Middleware> L<Plack::Builder>
+
+=cut
 
