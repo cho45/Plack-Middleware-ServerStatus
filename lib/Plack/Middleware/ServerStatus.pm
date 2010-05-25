@@ -198,7 +198,7 @@ sub _handle_server_status {
 
     my $ppid   = $workers->[0]->{ppid};
     my $uptime = `ps -p $ppid -o etime=`;
-    my ($day, $hour, $min, $sec) = ($uptime =~ /(?:(\d+)-)?(?:(\d+):)?(?:(\d+):)?(\d+)/);
+    my ($day, $hour, $min, $sec) = ($uptime =~ /(?:(?:(?:(\d+)-)(\d+):)?(\d+):)?(\d+)/);
     my $uptime_sec = _uptime_sec($uptime);
 
     $avg_req_per_sec = sprintf('%.2f', $avg_req_per_sec);
@@ -265,7 +265,8 @@ sub _collect_worker_info {
 
 sub _uptime_sec {
     my ($etime) = @_;
-    my ($day, $hour, $min, $sec) = ($etime =~ /(?:(\d+)-)?(?:(\d+):)?(?:(\d+):)?(\d+)/);
+    # 5-10:10:10
+    my ($day, $hour, $min, $sec) = ($etime =~ /(?:(?:(?:(\d+)-)(\d+):)?(\d+):)?(\d+)/);
     $day ||= 0; $hour ||= 0; $min ||= 0;
     my $uptime_sec = ($day * 24 * 60 * 60) + ($hour * 60 * 60) + ($min * 60) + $sec;
 }
