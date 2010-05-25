@@ -7,7 +7,7 @@ use Plack::Util;
 use Plack::Util::Accessor qw(header_name);
 use Text::MicroTemplate;
 use List::Util qw(reduce);
-use Plack::Util::Accessor qw(renderer);
+use Plack::Util::Accessor qw(renderer path);
 use Plack::Request;
 use Net::CIDR::Lite;
 
@@ -175,11 +175,12 @@ sub prepare_app {
             line_start => '%',
         )->build
     );
+    $self->path('/server-status') unless $self->path;
 }
 
 sub call {
     my ($self, $env) = @_;
-    return $self->_handle_server_status($env) if $env->{PATH_INFO} eq '/server-status';
+    return $self->_handle_server_status($env) if $env->{PATH_INFO} eq $self->path;
     my $res = $self->app->($env);
 }
 
