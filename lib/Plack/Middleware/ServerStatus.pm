@@ -7,7 +7,7 @@ use Plack::Util;
 use Plack::Util::Accessor qw(header_name);
 use Text::MicroTemplate;
 use List::Util qw(reduce);
-use Plack::Util::Accessor qw(renderer path);
+use Plack::Util::Accessor qw(renderer path cidr);
 use Plack::Request;
 use Net::CIDR::Lite;
 
@@ -277,10 +277,14 @@ sub is_allowed {
 
     $self->{_cidr} ||= do {
         my $cidr = Net::CIDR::Lite->new;
-        $cidr->add('10.0.0.0/8');
-        $cidr->add('172.16.0.0/12');
-        $cidr->add('192.168.0.0/16');
-        $cidr->add('127.0.0.0/8');
+        if ($self->cidr) {
+            $cidr->add($_) for @{$self->cidr};
+        } else {
+            $cidr->add('10.0.0.0/8');
+            $cidr->add('172.16.0.0/12');
+            $cidr->add('192.168.0.0/16');
+            $cidr->add('127.0.0.0/8');
+        }
     };
 
     $self->{_cidr}->find($address);
@@ -298,7 +302,9 @@ Plack::Middleware::ServerStatus - Show server status like Apache's mod_status
   use Plack::Builder;
 
   builder {
-      enable "Plack::Middleware::ServerStatus", path => '/server-status';
+      enable "Plack::Middleware::ServerStatus",
+          path => '/server-status',
+          cidr => [qw[127.0.0.0/8]];
       $app;
   };
 
@@ -315,9 +321,11 @@ This middleware just parses C<ps> result as following:
   47162  0.0  0.1 S+ 0:00.01 server-status[let] (req=1) _ 127.0.0.1 local.hatena.ne.jp:5000 GET /debug_toolbar/information.gif HTTP/1.1       
   47161  0.0  0.1 S+ 0:00.02 server-status[let] (req=1) _ 127.0.0.1 local.hatena.ne.jp:5000 GET /debug_toolbar/jquery.js HTTP/1.1       
 
-Starman and Starlet (forked) supports this C<ps> format. You have to use server-status branch of following repository because it is not include original repository master.
+Starman and Starlet (forked) supports this C<ps> format. You have to use C<server-status> branch of following repository because it is not include original repository master.
 
 http://github.com/cho45/Starman/tree/server-status , http://github.com/cho45/Starlet/tree/server-status
+
+Anyone not from LAN can't access this middleware, will get 403 forbidden response. You can customize it by C<cidr> option.
 
 =head1 AUTHOR
 
