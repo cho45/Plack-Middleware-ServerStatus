@@ -9,6 +9,7 @@ use Text::MicroTemplate;
 use List::Util qw(reduce);
 use Plack::Util::Accessor qw(renderer);
 use Plack::Request;
+use Net::CIDR::Lite;
 
 
 sub TEMPLATE { <<'EOTMPL' }
@@ -165,7 +166,7 @@ sub call {
 
 sub _handle_server_status {
     my ($self, $env) = @_;
-    unless ($env->{REMOTE_ADDR} =~ /^(192\.168\.|127\.0\.0\.)/) {
+    unless ($self->is_allowed($env->{REMOTE_ADDR})) {
         return [403, ['Content-Type' => 'text/plain'], [ 'Forbidden' ]]
     }
 
@@ -248,6 +249,20 @@ sub _uptime_sec {
     my ($day, $hour, $min, $sec) = ($etime =~ /(?:(\d+)-)?(?:(\d+):)?(?:(\d+):)?(\d+)/);
     $day ||= 0; $hour ||= 0; $min ||= 0;
     my $uptime_sec = ($day * 24 * 60 * 60) + ($hour * 60 * 60) + ($min * 60) + $sec;
+}
+
+sub is_allowed {
+    my ($self, $address) = @_;
+
+    $self->{_cidr} ||= do {
+        my $cidr = Net::CIDR::Lite->new;
+        $cidr->add('10.0.0.0/8');
+        $cidr->add('172.16.0.0/12');
+        $cidr->add('192.168.0.0/16');
+        $cidr->add('127.0.0.0/8');
+    };
+
+    $self->{_cidr}->find($address);
 }
 
 1;
