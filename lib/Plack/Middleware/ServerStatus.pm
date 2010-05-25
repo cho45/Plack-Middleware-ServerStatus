@@ -62,6 +62,25 @@ td.proto {
     text-align: right;
 }
 
+tr.key-R td {
+    background: #fed4d4;
+}
+
+tr.key-W td {
+    background: #dafed4;
+}
+
+tr.key-K td {
+    background: #dafed4;
+}
+
+tr.key-C td {
+    background: #feecd4;
+}
+
+tr.key-_ td {
+}
+
 pre.scoreboard {
     padding: 1em;
     background: #efefef;
@@ -106,7 +125,7 @@ pre.scoreboard {
     </thead>
     <tbody>
         <% for my $worker (@$workers) { %>
-        <tr>
+        <tr class="key-<%= $worker->{key} %>">
             <td class="pid"><%= $worker->{pid} %></td>
             <td class="uptime"><%= $worker->{uptime} %></td>
             <td class="access"><%= $worker->{meta}->{req} %></td>
