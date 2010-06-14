@@ -242,6 +242,7 @@ sub _collect_worker_info {
         my ($name, $meta, $key, $client, $host, $method, $path, $proto) =
             $command =~ qr{^server-status\[([^]]+?)\] \(([^)]+?)\) (.)(?: ([^\s]+) ([^\s]+) ([^\s]+) ([^\s]+) ([^\s]+))?};
 
+        next unless $name eq $ENV{SERVER_STATUS_CLASS};
 
         push @$workers, +{
             ppid   => $ppid,
