@@ -3,6 +3,8 @@ package Plack::Middleware::ServerStatus;
 use strict;
 use warnings;
 use parent qw(Plack::Middleware);
+our $VERSION = '0.01';
+
 use Plack::Util;
 use Plack::Util::Accessor qw(header_name);
 use Text::MicroTemplate;
